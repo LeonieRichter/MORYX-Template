@@ -1,4 +1,7 @@
 ﻿using System.ComponentModel;
+using Microsoft.Extensions.Logging;
+using Moryx.Configuration;
+using Moryx.Container;
 using Moryx.Runtime.Container;
 using Moryx.Runtime.Modules;
 using MyApplication.Module.Components;
@@ -6,7 +9,6 @@ using MyApplication.Module.Facade;
 
 namespace MyApplication.Module.ModuleController
 {
-    [ServerModule(ModuleName)]
     [Description("Description of your module")]
     //public class ModuleController : ServerModuleBase<ModuleConfig> // No facade export
     public class ModuleController : ServerModuleFacadeControllerBase<ModuleConfig>, IFacadeContainer<IMyFacade> // Facade export
@@ -71,6 +73,11 @@ namespace MyApplication.Module.ModuleController
         #region FacadeContainer
 
         private readonly MyFacade _myFacade = new MyFacade();
+
+        public ModuleController(IModuleContainerFactory containerFactory, IConfigManager configManager, ILoggerFactory loggerFactory) : base(containerFactory, configManager, loggerFactory)
+        {
+        }
+
         IMyFacade IFacadeContainer<IMyFacade>.Facade => _myFacade;
 
         #endregion
